@@ -1,4 +1,3 @@
-import Foundation
 
 enum Experiencia : String
 {
@@ -90,8 +89,8 @@ protocol Manutencao {
     var nome: String
     var historico: [String]
 
-    func reparar();
-    func quebrada();
+    func reparar() -> Bool;
+    func emDia() -> Bool;
 }
 
 protocol Aula {
@@ -129,35 +128,18 @@ class Maquina : Manutencao
         id = String(Int.random(1000, 19999))
         self.nome = nome
     }
-    func reparar() {
+
+    func reparar() -> Bool {
         if estaFuncionando
         {
             print("A Máquina Está em ordem")
         } else
         {
-            let date = Date()
-            let hour = Calendar.current.component(component: .hour, from: date)
-            let minute = Calendar.current.component(component: .minute, from: date)
-            let day = Calendar.current.component(component: .day, from: date)
-            let month = Calendar.current.component(component: .month, from: date)
-            let message = "A Máquina foi reparada em \(day) de \(month) as \(hour):\(minute)"
-            print(message)
-            historico.append(contentsOf: message)
-            estaFuncionando = true
+            print("A Máquina necessita de reparos")
         }
+        return estaFuncionando
     }
-    func quebrada() {
-        if estaFuncionando
-        {
-            let date = Date()
-            let hour = Calendar.current.component(component: .hour, from: date)
-            let minute = Calendar.current.component(component: .minute, from: date)
-            let day = Calendar.current.component(component: .day, from: date)
-            let month = Calendar.current.component(component: .month, from: date)
-            historico.append(contentsOf: "A Máquina foi quebrada em \(day) de \(month) as \(hour):\(minute)")
-        } else
-        {
-            print("A Máquina Já está quebrada")
-        }
+    func emDia() -> Bool {
+        return estaFuncionando
     }
 }
