@@ -1,6 +1,5 @@
 import Foundation
 
-// --- Enums ---
 enum Experiencia: String {
     case iniciante = "Iniciante", intermediario = "Intermediário", avancado = "Avançado"
 }
@@ -224,13 +223,28 @@ class Main {
         print("Não é possível prosseguir sem selecionar uma aula.")
         return
     }
-        if aula is TreinoColetivo
+        if aula is TreinoColetivo && plano.personal
         {
             print("Deseja ter um personal? (s/n)")
             
             if let opcao = readLine(), opcao == "s"
             {
-                mostrarInstrutores(db: db)
+                personal = escolherInstrutor(db: db)
+            }
+        }
+        else if aula is TreinoPersonal
+        {
+            personal = escolherInstrutor(db: db)
+        }
+        
+        let novoAluno = Aluno(nome: nome, email: emailStr, plano: plano, aula: aula, instrutor: personal)
+        db.alunos[novoAluno.id] = novoAluno
+        print("Aluno cadastrado com ID: \(novoAluno.id)")
+    }
+
+    func escolherInstrutor(db: DB) -> Instrutor?
+    {
+        mostrarInstrutores(db: db)
                 if let instrutorId = readLine(), let instrutor = db.instrutores[instrutorId] 
                 {
                     print("Digite o horário desejado:")
@@ -253,14 +267,10 @@ class Main {
                                 print("Horário indisponível. Tente novamente.")
                             }
                         } while !horarioValido 
+                        instrutor.horarios.remove(horario)
+                        return instrutor
                 }
-                
-            }
-        }
-        
-        let novoAluno = Aluno(nome: nome, email: emailStr, plano: plano, aula: aula)
-        db.alunos[novoAluno.id] = novoAluno
-        print("Aluno cadastrado com ID: \(novoAluno.id)")
+                return nil
     }
 
     func mudarStatusMaquina(db: DB, novoStatus: StatusMaquina) {
